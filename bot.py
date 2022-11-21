@@ -51,25 +51,27 @@ async def start(ctx, date="Aujourd'hui", classe=None):
         groupe = classe
     if groupe == None :
         await ctx.channel.send("Tu n'as pas de rôle de classe. Tu peux préciser un groupe dans la commande (à la suite de /edt)")
-    else :  
-        API.update_info();
-        edt = API.getEDT(groupe, date)
+    else :
+        try :
+            API.update_info();
+            edt = API.getEDT(groupe, date)
 
-        await ctx.channel.send("**Emploi du temps {0}, Journée : {1}**".format(groupe,date))
-        #pprint(edt)
+            await ctx.channel.send("**Emploi du temps {0}, Journée : {1}**".format(groupe,date))
+            #pprint(edt)
 
-        message = ">>> "
-        for x in edt : 
-            message += "**" + x[-1] + "**"
-            if (len(x[-3])>5) :
-                message += " - *" + x[-3] + "*"
-            message += "\n"
-            message += "**" + "="*(len(x[-1])-5) + "**\n"
-            message += x[0] + " - " + x[1] +" | " + x[2]
-            if (len(x[-2])>5) :
-                message += "\n*" + x[-2] + "*"
-            message += "\n\n"
-            
+            message = ">>> "
+            for x in edt : 
+                message += "**" + x[-1] + "**"
+                if (len(x[-3])>5) :
+                    message += " - *" + x[-3] + "*"
+                message += "\n"
+                message += "**" + "="*(len(x[-1])-5) + "**\n"
+                message += x[0] + " - " + x[1] +" | " + x[2]
+                if (len(x[-2])>5) :
+                    message += "\n*" + x[-2] + "*"
+                message += "\n\n"
+         except HTTPError :
+            message = "Les serveurs de Rennes sont down (original ?)"            
         await ctx.channel.send(message)
 
 bot.run(TOKEN)
